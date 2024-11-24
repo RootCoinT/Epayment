@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= role.charAt(0).toUpperCase() + role.slice(1) %> Login</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="auth-container">
+        <h1><%= role.charAt(0).toUpperCase() + role.slice(1) %> Login</h1>
+        <% if (error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        <form onsubmit="handleLogin(event)" class="auth-form">
+            <input type="hidden" id="roleInput" value="<%= role %>">
+            <div class="form-group">
+                <label><%= role === 'student' ? 'Student' : 'Teacher' %> ID:</label>
+                <input type="text" id="userId" required>
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="/auth/register?role=<%= role %>">Register</a></p>
+        <p><a href="/" class="back-link">Back to Home</a></p>
+    </div>
+    <script>
+    async function handleLogin(event) {
+        event.preventDefault();
+        
+        const role = document.getElementById('roleInput').value;
+        const userId = document.getElementById('userId').value;
+        const password = document.getElementById('password').value;
+        
+        try {
+            const response = await fetch(`/auth/${role}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    [role === 'student' ? 'studentId' : 'teacherId']: userId,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                // 登录成功，重定向到对应的仪表板
+                window.location.href = `/${role}/${userId}`;
+            } else {
+                alert(data.message || 'Login failed');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Login failed. Please try again.');
+        }
+    }
+    </script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: {
+                    value: 80,
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: ['#ee7752', '#e73c7e', '#23a6d5', '#23d5ab']
+                },
+                shape: {
+                    type: 'circle'
+                },
+                opacity: {
+                    value: 0.6,
+                    random: true
+                },
+                size: {
+                    value: 3,
+                    random: true
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#23a6d5',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 3,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'repulse'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                }
+            },
+            retina_detect: true
+        });
+    </script>
+</body>
+</html>

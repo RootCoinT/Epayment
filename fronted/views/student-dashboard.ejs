@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #2c3e50;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .student-info {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .student-info h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .student-info p {
+            color: #7f8c8d;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .courses-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .enrolled-courses, .available-courses {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .courses-section h2 {
+            color: #34495e;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .course-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: transform 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .course-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .course-card p {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .attendance-table th,
+        .attendance-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .attendance-table th {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .attendance-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 10px;
+            }
+
+            .courses-section {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        .mining-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .mining-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-mining {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-mining:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-mining:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        #miningStatus {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        #miningStatus.mining-active {
+            color: #e67e22;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .wallet-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .balance-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .btn-refresh {
+            background-color: #95a5a6;
+            color: white;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .btn-refresh:hover {
+            background-color: #7f8c8d;
+            transform: rotate(180deg);
+        }
+
+        .refresh-icon {
+            font-size: 18px;
+        }
+
+        .balance-loading {
+            opacity: 0.5;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .refreshing {
+            animation: rotate 1s linear infinite;
+        }
+
+        .rewards-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 20px;
+        }
+
+        .reward-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .reward-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .reward-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .reward-card h3 {
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .reward-card p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+        }
+
+        .btn-exchange {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-exchange:hover {
+            background-color: #2980b9;
+        }
+
+        .balance-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-refresh {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .btn-refresh:hover {
+            color: #2980b9;
+        }
+
+        .btn-refresh.refreshing {
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Student Dashboard</h1>
+            <a href="/auth/logout" class="logout-btn">Sign Out</a>
+        </div>
+
+        <div class="student-info">
+            <h2>Student Information</h2>
+            <p>Student ID: <%= student.studentId %></p>
+            <p>Name: <%= student.name %></p>
+            <p>Wallet Address: <%= student.address %></p>
+            <p class="balance-container">
+                Balance: <span id="walletBalance">Loading...</span>
+                <button class="btn-refresh" onclick="refreshBalance()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </p>
+        </div>
+
+        <div class="mining-section">
+            <h2>Mining</h2>
+            <div class="mining-container">
+                <p id="miningStatus">Ready to mine</p>
+                <button class="btn-mining" onclick="startMining('<%= student.address %>')">Start Mining</button>
+            </div>
+        </div>
+
+        <div class="courses-section">
+            <div class="enrolled-courses">
+                <h2>My Enrolled Courses</h2>
+                <% if (enrolledCourses && enrolledCourses.length > 0) { %>
+                    <% enrolledCourses.forEach(function(course) { %>
+                        <div class="course-card">
+                            <h3><%= course.courseName %></h3>
+                            <p><strong>Teacher:</strong> <%= course.teacherName %></p>
+                            <p><%= course.description %></p>
+                            <div class="course-actions">
+                                <button onclick="showSignInModal('<%= course.courseId %>', '<%= student.studentId %>', '<%= course.courseName %>')" class="btn btn-secondary">
+                                    Sign In
+                                </button>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No enrolled courses yet.</p>
+                <% } %>
+            </div>
+
+            <div class="available-courses">
+                <h2>Available Courses</h2>
+                <% if (availableCourses && availableCourses.length > 0) { %>
+                    <% availableCourses.forEach(function(course) { %>
+                        <div class="course-card">
+                            <h3><%= course.courseName %></h3>
+                            <p><strong>Teacher:</strong> <%= course.teacherName %></p>
+                            <p><%= course.description %></p>
+                            <button onclick="enrollCourse('<%= student.studentId %>', '<%= course.courseId %>')" class="btn btn-primary">
+                                Enroll
+                            </button>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No available courses.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="rewards-section">
+            <h2>Rewards Exchange</h2>
+            <div class="rewards-grid">
+                <div class="reward-card">
+                    <img src="/images/reward1.jpg" alt="Reward 1">
+                    <h3>Bottle</h3>
+                    <p>Cost: 25 BTC</p>
+                    <button onclick="exchangeReward(1, 25)" class="btn-exchange">Exchange</button>
+                </div>
+                <div class="reward-card">
+                    <img src="/images/reward2.jpg" alt="Reward 2">
+                    <h3>Thermos cup</h3>
+                    <p>Cost: 50 BTC</p>
+                    <button onclick="exchangeReward(2, 50)" class="btn-exchange">Exchange</button>
+                </div>
+                <div class="reward-card">
+                    <img src="/images/reward3.jpg" alt="Reward 3">
+                    <h3>Hoodie</h3>
+                    <p>Cost: 75 BTC</p>
+                    <button onclick="exchangeReward(3, 75)" class="btn-exchange">Exchange</button>
+                </div>
+                <div class="reward-card">
+                    <img src="/images/reward4.jpg" alt="Reward 4">
+                    <h3>Woven bag</h3>
+                    <p>Cost: 100 BTC</p>
+                    <button onclick="exchangeReward(4, 100)" class="btn-exchange">Exchange</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 签到模态框 -->
+    <div id="signInModal" class="modal">
+        <div class="modal-content">
+            <h3>Course Sign In</h3>
+            <p id="selectedCourse" style="margin-bottom: 20px; color: #7f8c8d;"></p>
+            <form id="signInForm" onsubmit="submitSignIn(event)">
+                <input type="hidden" id="courseIdInput" name="courseId">
+                <div class="form-group">
+                    <label for="studentIdConfirm">Confirm Your Student ID:</label>
+                    <input type="text" id="studentIdConfirm" name="studentId" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="closeSignInModal()" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function viewCourseDetails(courseId) {
+            window.location.href = `/student/course/${courseId}`;
+        }
+
+        async function enrollCourse(studentId, courseId) {
+            try {
+                const response = await fetch('/student/enroll-course', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ studentId, courseId })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Successfully enrolled in course!');
+                    location.reload();
+                } else {
+                    alert(data.message || 'Failed to enroll in course');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to enroll in course');
+            }
+        }
+
+        async function viewAttendance(courseId, studentId) {
+            try {
+                const response = await fetch(`/student/attendance/${courseId}/${studentId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    // 创建一个模态框来显示出勤记录
+                    const records = data.attendanceRecords;
+                    let modalContent = `
+                        <div class="attendance-modal">
+                            <h3>Attendance Records</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Transaction ID</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+                    
+                    records.forEach(record => {
+                        modalContent += `
+                            <tr>
+                                <td>${new Date(record.timestamp).toLocaleString()}</td>
+                                <td>${record.txId}</td>
+                                <td>Present</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    modalContent += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                    
+                    // 显示模态框
+                    const modal = document.createElement('div');
+                    modal.className = 'modal';
+                    modal.innerHTML = modalContent;
+                    document.body.appendChild(modal);
+                    
+                    // 添加关闭按钮
+                    const closeBtn = document.createElement('button');
+                    closeBtn.innerText = 'Close';
+                    closeBtn.onclick = () => modal.remove();
+                    modal.querySelector('.attendance-modal').appendChild(closeBtn);
+                } else {
+                    alert(data.message || 'Failed to load attendance records');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load attendance records');
+            }
+        }
+
+        function showSignInModal(courseId, studentId, courseName) {
+            const modal = document.getElementById('signInModal');
+            const courseIdInput = document.getElementById('courseIdInput');
+            const selectedCourse = document.getElementById('selectedCourse');
+            
+            courseIdInput.value = courseId;
+            selectedCourse.textContent = `Signing in to: ${courseName}`;
+            modal.style.display = 'flex';
+        }
+
+        function closeSignInModal() {
+            document.getElementById('signInModal').style.display = 'none';
+        }
+
+        async function submitSignIn(event) {
+            event.preventDefault();
+            const courseId = document.getElementById('courseIdInput').value;
+            
+            try {
+                const response = await fetch('/student/sign-in', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        courseId: courseId
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Successfully signed in!');
+                    // 可选：刷新出勤记录显示
+                    location.reload();
+                } else {
+                    alert(data.message || 'Sign-in failed');
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Failed to sign in. Please try again.');
+            }
+        }
+
+        async function getWalletBalance() {
+            const balanceElement = document.getElementById('walletBalance');
+            try {
+                const address = '<%= student.address %>';
+                console.log('Fetching balance for address:', address);
+
+                const response = await fetch(`/student/get-balance/${address}`);
+                const data = await response.json();
+                
+                console.log('Balance data received:', data);
+                
+                if (data.balance) {
+                    const balanceInBTC = (data.balance / 100000000).toFixed(3);
+                    balanceElement.textContent = `${balanceInBTC} BTC`;
+                } else {
+                    throw new Error('No balance data received');
+                }
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                balanceElement.textContent = 'Error fetching balance';
+            }
+        }
+
+        async function refreshBalance() {
+            const refreshBtn = document.querySelector('.btn-refresh');
+            refreshBtn.classList.add('refreshing');
+            await getWalletBalance();
+            refreshBtn.classList.remove('refreshing');
+        }
+
+        // 页面加载和挖矿成功后都会调用这个函数
+        document.addEventListener('DOMContentLoaded', getWalletBalance);
+
+        async function startMining(address) {
+            if (!address) {
+                alert('Wallet address not found. Please ensure your wallet is initialized.');
+                return;
+            }
+
+            const statusElement = document.getElementById('miningStatus');
+            const miningButton = document.querySelector('.btn-mining');
+            
+            try {
+                statusElement.textContent = 'Mining in progress...';
+                statusElement.classList.add('mining-active');
+                miningButton.disabled = true;
+
+                const response = await fetch('/student/mine', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rewardAddress: address
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    statusElement.textContent = `Mining successful! Block index: ${data.blockIndex}`;
+                    statusElement.classList.remove('mining-active');
+                    // 挖矿成功后刷新余额
+                    await getWalletBalance();
+                } else {
+                    throw new Error(data.message || 'Mining failed');
+                }
+            } catch (error) {
+                console.error('Mining error:', error);
+                statusElement.textContent = 'Mining failed: ' + error.message;
+                statusElement.classList.remove('mining-active');
+            } finally {
+                miningButton.disabled = false;
+            }
+        }
+
+        async function exchangeReward(rewardId, cost) {
+            try {
+                const balanceResponse = await fetch('/student/balance');
+                const balanceData = await balanceResponse.json();
+                
+                if (!balanceData.success) {
+                    throw new Error('Failed to get balance');
+                }
+
+                const currentBalance = balanceData.balance;
+
+                if (currentBalance < cost) {
+                    alert(`Insufficient balance. You need ${cost} BTC but only have ${currentBalance} BTC.`);
+                    return;
+                }
+
+                const response = await fetch('/student/exchange-reward', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rewardId,
+                        cost
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Exchange successful! Your reward will be processed soon.');
+                    await getWalletBalance();
+                } else {
+                    alert(data.message || 'Exchange failed');
+                }
+            } catch (error) {
+                console.error('Exchange error:', error);
+                alert('Failed to process exchange. Please try again.');
+            }
+        }
+
+        async function signIn(courseId) {
+            try {
+                const response = await fetch('/student/sign-in', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        courseId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Successfully signed in and received reward!');
+                    // 刷新余额显示
+                    await getWalletBalance();
+                } else {
+                    alert(data.message || 'Failed to sign in');
+                }
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Failed to sign in. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

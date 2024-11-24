@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= role.charAt(0).toUpperCase() + role.slice(1) %> Registration</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h1><%= role.charAt(0).toUpperCase() + role.slice(1) %> Registration</h1>
+        <% if (error) { %>
+            <div class="error-message"><%= error %></div>
+        <% } %>
+        <form onsubmit="handleRegister(event)" class="auth-form">
+            <input type="hidden" name="role" value="<%= role %>">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+                <label><%= role === 'student' ? 'Student' : 'Teacher' %> ID:</label>
+                <input type="text" name="userId" required>
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" name="password" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="/auth/login?role=<%= role %>">Login</a></p>
+        <p><a href="/" class="back-link">Back to Home</a></p>
+    </div>
+    <script>
+    async function handleRegister(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        
+        try {
+            const formDataObj = {
+                name: formData.get('name'),
+                userId: formData.get('userId'),
+                password: formData.get('password'),
+                role: formData.get('role')
+            };
+            
+            console.log('Submitting registration:', formDataObj);
+
+            const response = await fetch('/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formDataObj)
+            });
+
+            const data = await response.json();
+            console.log('Registration response:', data);
+
+            if (data.success) {
+                alert('Registration successful!');
+                window.location.href = `/auth/login?role=${formData.get('role')}`;
+            } else {
+                alert(data.message || 'Registration failed');
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+            alert('Registration failed. Please check the console for details.');
+        }
+    }
+    </script>
+</body>
+</html>
