@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Management System</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <h1>Course Management System</h1>
+        <div class="role-selection">
+            <div class="role-card">
+                <h2>Student Portal</h2>
+                <p>Access your courses, attendance, and more</p>
+                <div class="button-group">
+                    <a href="/auth/login?role=student" class="btn btn-primary">Student Login</a>
+                    <a href="/auth/register?role=student" class="btn btn-secondary">Student Register</a>
+                </div>
+            </div>
+            <div class="role-card">
+                <h2>Teacher Portal</h2>
+                <p>Manage courses, students, and attendance</p>
+                <div class="button-group">
+                    <a href="/auth/login?role=teacher" class="btn btn-primary">Teacher Login</a>
+                    <a href="/auth/register?role=teacher" class="btn btn-secondary">Teacher Register</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
