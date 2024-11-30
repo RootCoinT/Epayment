@@ -643,116 +643,118 @@ a:hover {
 }
 
 .main-content {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 25px;
+    display: flex;
+    gap: 15px;
     width: 100%;
 }
 
 .content-left {
     flex: 2;
-    min-width: 0; /* 防止内容溢出 */
+    width: 20%;
+    min-width: 300px;
 }
 
 .content-right {
-    flex: 1;
-    min-width: 0; /* 防止内容溢出 */
+    flex: 8;
+    width: 80%;
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-/* 课程卡片区域 */
 .course-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 25px;
-    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
 }
 
 .course-card {
+    padding: 10px;
+    font-size: 0.9em;
+}
+
+.course-title h3 {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+}
+
+.course-actions {
+    gap: 5px;
+}
+
+.course-actions button {
+    padding: 4px 8px;
+    font-size: 0.8em;
+}
+
+.attendance-chart {
+    background: white;
+    border-radius: 8px;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+    height: 400px;
 }
 
-.course-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+.attendance-chart-wrapper {
+    min-width: 300px;
+    width: 100%;
+    height: 350px;
 }
 
-/* 面板样式 */
-.panel {
-    padding: 25px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    height: fit-content;
-}
-
-/* 全局考勤搜索面板样式 */
 .global-attendance-search {
-    margin-top: 25px;
-}
-
-.search-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    min-height: 120px;
 }
 
 .search-controls {
     display: flex;
-    gap: 10px;
-    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 .search-input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
     flex: 1;
+    display: flex;
+    gap: 8px;
 }
 
 .search-input-group input {
-    padding: 8px 12px;
+    flex: 1;
+    padding: 6px;
+    font-size: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
-    width: 100%;
+    height: 28px;
 }
 
 .search-button {
-    align-self: flex-end;
-    height: 100%;
+    padding: 6px 12px;
+    font-size: 12px;
+    height: 28px;
 }
 
-/* 响应式布局 */
-@media (max-width: 1600px) {
-    .course-cards {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    }
+.panel-header h2 {
+    font-size: 1em;
+    margin-bottom: 8px;
 }
 
-@media (max-width: 1200px) {
-    .main-content {
-        grid-template-columns: 1fr;
-    }
-    
-    .course-cards {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    }
+.course-title h3 {
+    font-size: 0.95em;
 }
 
-@media (max-width: 768px) {
-    .dashboard {
-        width: 98%;
-        padding: 10px;
-    }
-    
-    .stats-container,
-    .course-cards {
-        grid-template-columns: 1fr;
-    }
+.course-actions {
+    gap: 6px;
+}
+
+.course-actions button {
+    padding: 5px 10px;
+    font-size: 0.85em;
 }
 
 .blockchain-signin-table {
@@ -1208,7 +1210,7 @@ a:hover {
     color: #3498db;
 }
 
-/* 在文件开头添加动态背景相关样式 */
+/* 在文件头添加动态背景相关样式 */
 body {
     margin: 0;
     padding: 0;
@@ -1386,7 +1388,7 @@ td {
     box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
 }
 
-/* 链接样式 */
+/* 链���样式 */
 .auth-container a {
     color: #3498db;
     text-decoration: none;
@@ -1539,4 +1541,87 @@ body.auth-page {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* 添加课程列表容器样式 */
+.courses-section {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: calc(100vh - 200px); /* 减去其他元素的高度，保留合适的滚动区域 */
+}
+
+.enrolled-courses, .available-courses {
+    flex: 1;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    /* 添加滚动功能 */
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* 美化滚动条样式 */
+.enrolled-courses::-webkit-scrollbar,
+.available-courses::-webkit-scrollbar {
+    width: 8px;
+}
+
+.enrolled-courses::-webkit-scrollbar-track,
+.available-courses::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.enrolled-courses::-webkit-scrollbar-thumb,
+.available-courses::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.enrolled-courses::-webkit-scrollbar-thumb:hover,
+.available-courses::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* 保课程卡片样式合适 */
+.course-card {
+    margin-bottom: 15px;
+    /* 其他现有样式保持不变 */
+}
+
+/* 添加图表容器样式 */
+.attendance-chart {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow-x: auto; /* 启用水平滚动 */
+}
+
+.attendance-chart-wrapper {
+    min-width: 600px; /* 设置最小宽度 */
+    width: 100%;
+    height: 300px; /* 设置固定高度 */
+}
+
+/* 美化滚动条样式 */
+.attendance-chart::-webkit-scrollbar {
+    height: 8px; /* 水平滚动条的高度 */
+}
+
+.attendance-chart::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.attendance-chart::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.attendance-chart::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

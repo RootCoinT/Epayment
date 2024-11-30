@@ -36,8 +36,9 @@ async function updateStatistics() {
 
 async function initializeAttendanceRateChart() {
     try {
-        // 获取所有课程卡片
         const courseCards = document.querySelectorAll('.course-card');
+        const today = new Date().toDateString(); // 获取今天的日期
+
         const attendanceData = await Promise.all(Array.from(courseCards).map(async card => {
             const courseId = card.dataset.courseId;
             const courseName = card.querySelector('.course-title h3').textContent.trim();
@@ -47,21 +48,27 @@ async function initializeAttendanceRateChart() {
             const response = await fetch(`/course/${courseId}/attendance`);
             const data = await response.json();
             
-            // 获取不重复的签到学生数量
-            const uniqueStudents = new Set();
-            if (data.data && data.data.records) {
-                data.data.records.forEach(record => {
-                    uniqueStudents.add(record.studentId);
-                });
-            }
+            // 筛选今天的签到记录
+            const todayRecords = data.data && data.data.records ? 
+                data.data.records.filter(record => {
+                    const recordDate = new Date(record.time).toDateString();
+                    return recordDate === today;
+                }) : [];
             
-            // 计算出勤率
+            // 获取今天不重复的签到学生数量
+            const uniqueStudents = new Set();
+            todayRecords.forEach(record => {
+                uniqueStudents.add(record.studentId);
+            });
+            
+            // 计算今日出勤率
             const uniqueAttendees = uniqueStudents.size;
             const rate = enrolledCount > 0 ? (uniqueAttendees / enrolledCount) * 100 : 0;
             
             console.log(`Course: ${courseName}`, {
+                date: today,
                 enrolledCount,
-                uniqueAttendees,
+                todayAttendees: uniqueAttendees,
                 rate
             });
             
@@ -78,7 +85,7 @@ async function initializeAttendanceRateChart() {
             data: {
                 labels: attendanceData.map(item => item.courseName),
                 datasets: [{
-                    label: 'Attendance Rate (%)',
+                    label: 'Today\'s Attendance Rate (%)',  // 更新标签
                     data: attendanceData.map(item => item.rate),
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -93,44 +100,37 @@ async function initializeAttendanceRateChart() {
             },
             options: {
                 responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Today's Attendance Rate (${new Date().toLocaleDateString()})`,  // 添加日期到标题
+                        font: {
+                            size: 16
+                        }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
                 scales: {
                     y: {
                         beginAtZero: true,
                         max: 100,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        },
                         ticks: {
                             callback: function(value) {
                                 return value + '%';
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `Attendance Rate: ${context.raw}%`;
                             }
                         }
                     }
                 }
             }
         });
+
     } catch (error) {
-        console.error('Error initializing attendance rate chart:', error);
+        console.error('Error initializing attendance chart:', error);
     }
 }
+
 // 确保在页面加载完成后调用
 document.addEventListener('DOMContentLoaded', () => {
     updateStatistics();
