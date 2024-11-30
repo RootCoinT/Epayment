@@ -30,7 +30,7 @@ npm start
 
 # login register
 
-![11111](/element/login and register.jpg "login_register")
+![11111](/element/loginAndRegister.png "login_register")
 
 # studentDashboard
 
