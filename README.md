@@ -19,3 +19,27 @@ npm start
 ### then you can see frontend result in http://localhost:3000/
 
 ### then explore it yourself!!
+
+# student_structure
+
+![11111](/element/student_structure.png "student_structure")
+
+# teacher_structure
+
+![11111](/element/teacher_structure.png "teacher_structure")
+
+# login register
+
+![11111](/element/login and register.jpg "login_register")
+
+# studentDashboard
+
+![11111](/element/studentDashboard.jpg "studentDashboard")
+
+# teacherDashboard
+
+![11111](/element/teacherDashboard.jpg "teacherDashboard")
+
+# attendanceAnalysis
+
+![11111](/element/attendanceAnalysis.jpg "attendanceAnalysis")

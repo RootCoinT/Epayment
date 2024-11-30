@@ -6,3 +6,6 @@ coverage
 yarn.lock
 .vscode
 data
+.DS_Store
+.env
+.env.local
